@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Karl</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+<body>
+
+    <section id="main_section" class="container-fluid bg-primary">
+
+        <h1 id="app_title" class="text-center">Karl</h1>
+        <hr class="separator">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div id="random_number" class="text-center">
+                        0
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <button id="generate_button" class="btn-rounded">
+                        Générer un nombre aléatoire
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <select id="law_select" class="form-control">
+                        <option selected disabled>- Loi associée -</option>
+                        <option value="0">Loi uniforme</option>
+                        <option value="1">Loi normale</option>
+                        <option value="2">Loi de Poisson</option>
+                        <option value="3">Loi exponentielle</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <div id="lambda_form" class="hidden">
+                        <input type="number" id="lambda_input" class="form-control" placeholder="λ">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+        /**
+         * Retourne un nombre aléatoire suivant une loi normale.
+         * 
+         * @return {Float}
+         */
+        function normalRandom()
+        {
+            return Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
+        }
+
+        /**
+         * Retourne un nombre aléatoire suivant une loi de poisson.
+         * 
+         * @param {Float} lambda
+         * 
+         * @return {Float}
+         */
+        function poissonRandom(lambda)
+        {
+            let k = Math.random();
+
+            return (Math.pow(lambda, k) / Math.fact(k)) * Math.exp(-lambda);
+        }
+
+        /**
+         * Retourne un nombre aléatoire suivant une loi exponentielle.
+         * 
+         * @param {Float} lambda
+         * 
+         * @return {Float}
+         */
+        function expRandom(lambda)
+        {
+            return -Math.log(1 - Math.random()) / lambda;
+        }
+        
+        $(function()
+        {
+            /**
+             * Fonction qui retourne la factorielle d'un nombre en argument.
+             * 
+             * @param {Integer} n
+             * 
+             * @return {Integer}
+             */
+            Math.fact = function(n)
+            {
+                if (n <= 0)
+                {
+                    return 1;
+                }
+
+                return n * Math.fact(n - 1);
+            }
+
+            // Action lors du clic sur le bouton de génération d'un nombre
+            // aléatoire.
+            $('#generate_button').on('click', function()
+            {
+                let law  = parseInt($('#law_select').val(), 10);
+
+                switch (law)
+                {
+                    case 0:
+                        $('#random_number').text(
+                            Math.random().toFixed(4)
+                        );
+                        break;
+                    case 1:
+                        $('#random_number').text(
+                            normalRandom().toFixed(4)
+                        );
+                        break;
+                    case 2:
+                        var lambda = parseFloat($('#lambda_input').val());
+                        $('#random_number').text(
+                            poissonRandom(lambda).toFixed(4)
+                        );
+                        break;
+                    case 3:
+                        var lambda = parseFloat($('#lambda_input').val());
+                        $('#random_number').text(
+                            expRandom(lambda).toFixed(4)
+                        );
+                        break;
+                }
+            });
+
+            // Action lors du changement de loi associée.
+            $('#law_select').on('change', function()
+            {
+                $('#lambda_form').val('').addClass('hidden');
+
+                switch (parseInt($(this).val(), 10))
+                {
+                    case 2:
+                    case 3:
+                        $('#lambda_form').removeClass('hidden');
+                        break;
+                }
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
