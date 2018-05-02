@@ -56,7 +56,7 @@
                     </button>
                 </div>
                 <div class="col-md-12">
-                    <input type="number" id="nb_simulations_input" class="form-control" placeholder="Nombre d'itérations">
+                    <input type="number" id="n_poisson_process_input" class="form-control" placeholder="n">
                     <input type="number" id="lambda_poisson_process_input" class="form-control" placeholder="λ" step="any">
                 </div>
             </div>
@@ -135,9 +135,9 @@
             // Poisson.
             $('#poisson_process_simulation_button').on('click', function()
             {
-                let chart          = $('#poisson_process_container').highcharts();
-                let lambda         = parseFloat($('#lambda_poisson_process_input').val());
-                let nb_simulations = parseInt($('#nb_simulations_input').val(), 10);
+                let chart  = $('#poisson_process_container').highcharts();
+                let lambda = parseFloat($('#lambda_poisson_process_input').val());
+                let n      = parseInt($('#n_poisson_process_input').val(), 10);
 
                 // On vide le graphique.
                 chart.series[0].remove(true);
@@ -145,10 +145,10 @@
                     data: [ ]
                 });
 
-                for (let i = 0; i < nb_simulations; i++)
+                for (let timer = 0; timer < n; timer += Math.expRandom(lambda))
                 {
                     chart.series[0].addPoint(
-                        [ Math.expRandom(lambda), 1 ], true
+                        [ timer, 1 ], true
                     );
                 }
             });
