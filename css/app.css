@@ -7,6 +7,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Fragment Core';
+    src: url('../fonts/fragment-core.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -18,20 +25,61 @@ a, button {
     cursor: pointer;
 }
 
-#main_section {
+section {
     width: 100%;
     min-height: 100%;
+    padding-top: 100px;
+}
+
+.subtitle {
+    max-width: 500px;
+    text-align: center;
+}
+
+.small-separator {
+    border: solid white 3px;
+    border-radius: 20px;
+    max-width: 100px;
+}
+
+.small-separator.blue {
+    border-color: #337ab7;
+}
+
+.btn-rounded {
+    display: block;
+    padding: 10px 20px;
+    width: 250px;
+    color: #337ab7 !important;
+    border: solid #337ab7 2px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none !important;
+    font-size: 15px;
+    background-color: transparent;
+}
+
+.btn-rounded:hover {
+    font-weight: bold;
+}
+
+.block-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-control {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.color-white {
+    color: white !important;
 }
 
 #app_title {
     font-family: 'Lovely Home', Arial, sans-serif;
     font-size: 50px;
-    color: white;
-    margin-top: 50px;
-}
-
-.separator {
-    border: solid white 1px;
 }
 
 #random_number {
@@ -40,35 +88,29 @@ a, button {
     margin-bottom: 20px;
 }
 
-.btn-rounded {
-    padding: 10px 20px;
-    width: 200px;
+#generate_button {
+    margin-bottom: 20px;
+    border-color: white;
     color: white !important;
-    border: solid white 2px;
-    border-radius: 20px;
-    text-align: center;
-    text-decoration: none !important;
-    font-size: 15px;
 }
 
-#generate_button, #poisson_process_simulation_button {
-    width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 20px;
-    display: block;
-    background-color: transparent;
-}
-
-.form-control {
-    width: 200px;
-    margin-right: auto;
-    margin-left: auto;
+#poisson_process_simulation_button {
     margin-bottom: 20px;
 }
 
-#poisson_process_container {
-    height: 200px;
+#poisson_process_chart_container {
+    height: 250px;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+#lets_go_button {
+    margin-top: 30px;
+}
+
+#app_footer {
+    border-top: solid grey 1px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    margin-top: 50px;
 }

@@ -4,83 +4,140 @@
     <title>Karl</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
 
-    <section id="main_section" class="container-fluid bg-primary">
+    <section id="home_section" class="container-fluid text-center">
+        
+        <h1 id="app_title">Karl</h1>
+        <hr class="small-separator blue">
+        <p class="subtitle block-center">
+            Karl permet la génération de nombres aléatoires suivants des lois de probabilités et la simulation de processus de Poisson.
+        </p>
+        <a id="lets_go_button" class="block-center btn-rounded page-scroll" href="#generate_section">
+            C'est parti !
+        </a>
 
-        <h1 id="app_title" class="text-center">Karl</h1>
-        <hr class="separator">
+    </section>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="col-md-12">
-                    <h2 class="h3 text-center">Générer un nombre aléatoire</h2>
-                </div>
-                <div class="col-md-12">
-                    <div id="random_number" class="text-center">
-                        0
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <button id="generate_button" class="btn-rounded">
-                        Générer un nombre aléatoire
-                    </button>
-                </div>
-                <div class="col-md-12">
-                    <select id="law_select" class="form-control">
-                        <option selected disabled>- Loi associée -</option>
-                        <option value="0">Loi uniforme</option>
-                        <option value="1">Loi normale</option>
-                        <option value="2">Loi de Poisson</option>
-                        <option value="3">Loi exponentielle</option>
-                    </select>
-                </div>
-                <div class="col-md-12">
-                    <div id="lambda_form" class="hidden">
-                        <input type="number" id="lambda_input" class="form-control" placeholder="λ">
-                    </div>
+    <section id="generate_section" class="container-fluid bg-primary">
+
+        <div class="row bg-primary">
+            <div class="col-md-12">
+                <h2 class="h3 text-center">GÉNÉRER UN NOMBRE ALÉATOIRE</h2>
+                <hr class="small-separator">
+                <p class="subtitle block-center">
+                    Le nombre ci-dessous représente le nombre aléatoire généré. Une fois la loi associée sélectionnée, cliquez sur le bouton.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <div id="random_number" class="text-center">
+                    0
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="col-md-12">
-                    <h2 class="h3 text-center">Simuler un processus de Poisson</h2>
+            <div class="col-md-12">
+                <button id="generate_button" class="btn-rounded block-center">
+                    Générer un nombre aléatoire
+                </button>
+            </div>
+            <div class="col-md-12">
+                <select id="law_select" class="form-control block-center">
+                    <option selected disabled>- Loi associée -</option>
+                    <option value="0">Loi uniforme</option>
+                    <option value="1">Loi normale</option>
+                    <option value="2">Loi de Poisson</option>
+                    <option value="3">Loi exponentielle</option>
+                </select>
+            </div>
+            <div class="col-md-12">
+                <div id="lambda_form" class="hidden">
+                    <input type="number" id="lambda_input" class="form-control block-center" placeholder="λ">
                 </div>
-                <div class="col-md-12">
-                    <div id="poisson_process_container"></div>
-                </div>
-                <div class="col-md-12">
-                    <button id="poisson_process_simulation_button" class="btn-rounded">
-                        Simuler le processus
-                    </button>
-                </div>
-                <div class="col-md-12">
-                    <input type="number" id="n_poisson_process_input" class="form-control" placeholder="n">
-                    <input type="number" id="lambda_poisson_process_input" class="form-control" placeholder="λ" step="any">
-                </div>
+            </div>
+            <div class="col-md-12 text-center">
+                <a class="page-scroll color-white" href="#poisson_process_section">
+                    <i class="fa fa-arrow-down"></i>&nbsp;&nbsp;Simuler un processus de Poisson
+                </a>
             </div>
         </div>
 
     </section>
 
+    <section id="poisson_process_section" class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="h3 text-center">SIMULER UN PROCESSUS DE POISSON</h2>
+                <hr class="small-separator blue">
+                <p class="subtitle block-center">
+                    Le graphique ci-dessous présente le processus de Poisson généré suivant les paramètres n (le temps de capture) et λ remplis après.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <div id="poisson_process_chart_container"></div>
+            </div>
+            <div class="col-md-12">
+                <button id="poisson_process_simulation_button" class="btn-rounded block-center">
+                    Simuler le processus
+                </button>
+            </div>
+            <div class="col-md-12">
+                <input type="number" id="stop_poisson_process_input" class="form-control block-center" placeholder="Temps de capture">
+                <input type="number" id="lambda_poisson_process_input" class="form-control block-center" placeholder="λ" step="any">
+            </div>
+        </div>
+
+    </section>
+
+    <footer id="app_footer" class="text-center">
+
+        Réalisé par <strong>Jérémie</strong>, <strong>Margaux</strong> et <strong>Thomas</strong> !
+
+        <p class="text-center text-muted">
+            © 2018
+        </p>
+
+    </footer>
+
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/highcharts.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/page-scroll.js"></script>
     <script type="text/javascript">
         
         $(function()
         {
-            $('#poisson_process_container').highcharts({
+            $('#poisson_process_chart_container').highcharts({
                 chart: {
-                    type: 'scatter'
+                    type: 'column'
                 },
                 title: {
-                    text: 'Processus simulé'
+                    text: null
+                },
+                yAxis: {
+                    title: {
+                        text: "Nombre d'évènements"
+                    },
+                    max: 1.0
+                },
+                xAxis: {
+                    title: {
+                        text: "Temps"
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.5,
+                        borderWidth: 0
+                    }
                 },
                 series: [{
-                    data: [ ]
+                    name: 'Événements',
+                    data: [ ],
+                    color: 'red'
                 }]
             });
 
@@ -135,17 +192,19 @@
             // Poisson.
             $('#poisson_process_simulation_button').on('click', function()
             {
-                let chart  = $('#poisson_process_container').highcharts();
+                let chart  = $('#poisson_process_chart_container').highcharts();
                 let lambda = parseFloat($('#lambda_poisson_process_input').val());
-                let n      = parseInt($('#n_poisson_process_input').val(), 10);
+                let stop   = parseInt($('#stop_poisson_process_input').val(), 10);
 
                 // On vide le graphique.
                 chart.series[0].remove(true);
                 chart.addSeries({
-                    data: [ ]
+                    name: 'Événements',
+                    data: [ ],
+                    color: '#337ab7'
                 });
 
-                for (let timer = 0; timer < n; timer += Math.expRandom(lambda))
+                for (let timer = 0; timer < stop; timer += Math.expRandom(lambda))
                 {
                     chart.series[0].addPoint(
                         [ timer, 1 ], true
