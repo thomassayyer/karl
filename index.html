@@ -14,7 +14,10 @@
         <hr class="separator">
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <h2 class="h3 text-center">Générer un nombre aléatoire</h2>
+                </div>
                 <div class="col-md-12">
                     <div id="random_number" class="text-center">
                         0
@@ -25,8 +28,6 @@
                         Générer un nombre aléatoire
                     </button>
                 </div>
-            </div>
-            <div class="col-md-12">
                 <div class="col-md-12">
                     <select id="law_select" class="form-control">
                         <option selected disabled>- Loi associée -</option>
@@ -42,68 +43,46 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <h2 class="h3 text-center">Simuler un processus de Poisson</h2>
+                </div>
+                <div class="col-md-12">
+                    <div id="poisson_process_container"></div>
+                </div>
+                <div class="col-md-12">
+                    <button id="poisson_process_simulation_button" class="btn-rounded">
+                        Simuler le processus
+                    </button>
+                </div>
+                <div class="col-md-12">
+                    <input type="number" id="nb_simulations_input" class="form-control" placeholder="Nombre d'itérations">
+                    <input type="number" id="lambda_poisson_process_input" class="form-control" placeholder="λ" step="any">
+                </div>
+            </div>
         </div>
 
     </section>
 
     <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/highcharts.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript">
-
-        /**
-         * Retourne un nombre aléatoire suivant une loi normale.
-         * 
-         * @return {Float}
-         */
-        function normalRandom()
-        {
-            return Math.sqrt(-2 * Math.log(Math.random())) * Math.cos(2 * Math.PI * Math.random());
-        }
-
-        /**
-         * Retourne un nombre aléatoire suivant une loi de poisson.
-         * 
-         * @param {Float} lambda
-         * 
-         * @return {Float}
-         */
-        function poissonRandom(lambda)
-        {
-            let k = Math.random();
-
-            return (Math.pow(lambda, k) / Math.fact(k)) * Math.exp(-lambda);
-        }
-
-        /**
-         * Retourne un nombre aléatoire suivant une loi exponentielle.
-         * 
-         * @param {Float} lambda
-         * 
-         * @return {Float}
-         */
-        function expRandom(lambda)
-        {
-            return -Math.log(1 - Math.random()) / lambda;
-        }
         
         $(function()
         {
-            /**
-             * Fonction qui retourne la factorielle d'un nombre en argument.
-             * 
-             * @param {Integer} n
-             * 
-             * @return {Integer}
-             */
-            Math.fact = function(n)
-            {
-                if (n <= 0)
-                {
-                    return 1;
-                }
-
-                return n * Math.fact(n - 1);
-            }
+            $('#poisson_process_container').highcharts({
+                chart: {
+                    type: 'scatter'
+                },
+                title: {
+                    text: 'Processus simulé'
+                },
+                series: [{
+                    data: [ ]
+                }]
+            });
 
             // Action lors du clic sur le bouton de génération d'un nombre
             // aléatoire.
@@ -120,19 +99,19 @@
                         break;
                     case 1:
                         $('#random_number').text(
-                            normalRandom().toFixed(4)
+                            Math.normalRandom().toFixed(4)
                         );
                         break;
                     case 2:
                         var lambda = parseFloat($('#lambda_input').val());
                         $('#random_number').text(
-                            poissonRandom(lambda).toFixed(4)
+                            Math.poissonRandom(lambda)
                         );
                         break;
                     case 3:
                         var lambda = parseFloat($('#lambda_input').val());
                         $('#random_number').text(
-                            expRandom(lambda).toFixed(4)
+                            Math.expRandom(lambda).toFixed(4)
                         );
                         break;
                 }
@@ -152,6 +131,23 @@
                 }
             });
 
+            // Action lors du clic sur le bouton de simulation d'un processus de
+            // Poisson.
+            $('#poisson_process_simulation_button').on('click', function()
+            {
+                let chart          = $('#poisson_process_container').highcharts();
+                let lambda         = parseFloat($('#lambda_poisson_process_input').val());
+                let nb_simulations = parseInt($('#nb_simulations_input').val(), 10);
+
+                for (let i = 0; i < nb_simulations; i++)
+                {
+                    chart.series[0].addPoint(
+                        [ Math.expRandom(lambda), 1 ]
+                    );
+                }
+
+                chart.redraw();
+            });
         });
 
     </script>

@@ -34,7 +34,7 @@ a, button {
     border: solid white 1px;
 }
 
-#random_number, #khi2_percentage {
+#random_number {
     color: white;
     font-size: 5em;
     margin-bottom: 20px;
@@ -51,7 +51,7 @@ a, button {
     font-size: 15px;
 }
 
-#generate_button, #test_button {
+#generate_button, #poisson_process_simulation_button {
     width: 250px;
     margin-left: auto;
     margin-right: auto;
@@ -60,27 +60,15 @@ a, button {
     background-color: transparent;
 }
 
-#from_input, #to_input {
-    width: 70px;
-}
-
-#law_select, #khi2_input {
+.form-control {
     width: 200px;
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 20px;
 }
 
-#generation_form_title, #test_form_title {
+#poisson_process_container {
+    height: 200px;
+    margin-top: 20px;
     margin-bottom: 20px;
-}
-
-#mu_sigma_form, #lambda_form, #k_form {
-    margin-bottom: 20px;
-}
-
-#mu_sigma_form input, #lambda_form input, #k_form input {
-    width: 200px;
-    margin-left: auto;
-    margin-right: auto;
 }
