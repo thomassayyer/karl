@@ -103,6 +103,31 @@
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/page-scroll.js"></script>
     <script type="text/javascript">
+
+        /**
+         * Simule un processus de Poisson.
+         * 
+         * @param {Object}  chart
+         * @param {Float}   lambda
+         * @param {Integer} stop
+         */
+        function poissonProcess(chart, lambda, stop)
+        {
+            // On vide le graphique.
+            chart.series[0].remove(true);
+            chart.addSeries({
+                name: 'Événements',
+                data: [ ],
+                color: '#337ab7'
+            });
+
+            for (let timer = 0; timer < stop; timer += Math.expRandom(lambda))
+            {
+                chart.series[0].addPoint(
+                    [ timer, 1 ], true
+                );
+            }
+        }
         
         $(function()
         {
@@ -192,20 +217,7 @@
                 let lambda = parseFloat($('#lambda_poisson_process_input').val());
                 let stop   = parseInt($('#stop_poisson_process_input').val(), 10);
 
-                // On vide le graphique.
-                chart.series[0].remove(true);
-                chart.addSeries({
-                    name: 'Événements',
-                    data: [ ],
-                    color: '#337ab7'
-                });
-
-                for (let timer = 0; timer < stop; timer += Math.expRandom(lambda))
-                {
-                    chart.series[0].addPoint(
-                        [ timer, 1 ], true
-                    );
-                }
+                poissonProcess(chart, lambda, stop);
             });
         });
 
