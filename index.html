@@ -139,14 +139,18 @@
                 let lambda         = parseFloat($('#lambda_poisson_process_input').val());
                 let nb_simulations = parseInt($('#nb_simulations_input').val(), 10);
 
+                // On vide le graphique.
+                chart.series[0].remove(true);
+                chart.addSeries({
+                    data: [ ]
+                });
+
                 for (let i = 0; i < nb_simulations; i++)
                 {
                     chart.series[0].addPoint(
-                        [ Math.expRandom(lambda), 1 ]
+                        [ Math.expRandom(lambda), 1 ], true
                     );
                 }
-
-                chart.redraw();
             });
         });
 
