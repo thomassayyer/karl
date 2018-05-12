@@ -9,59 +9,16 @@
 </head>
 <body>
 
-    <section id="home_section" class="container-fluid text-center">
+    <section id="home_section" class="container-fluid text-center bg-primary">
         
-        <h1 id="app_title">Karl</h1>
-        <hr class="small-separator blue">
-        <p class="subtitle block-center">
-            Karl permet la génération de nombres aléatoires suivants des lois de probabilités et la simulation de processus de Poisson.
+        <h1 id="app_title" class="color-white">Karl</h1>
+        <hr class="small-separator">
+        <p class="subtitle block-center color-white">
+            Karl permet la simulation de n satellites en mission. En outre, l'application permet le calcul de la fiabilité d'un satellite à remplir sa mission sur une durée déterminée.
         </p>
-        <a id="lets_go_button" class="block-center btn-rounded page-scroll" href="#generate_section">
+        <a id="lets_go_button" class="block-center btn-rounded page-scroll" href="#poisson_process_section">
             C'est parti !
         </a>
-
-    </section>
-
-    <section id="generate_section" class="container-fluid bg-primary">
-
-        <div class="row bg-primary">
-            <div class="col-md-12">
-                <h2 class="h3 text-center">GÉNÉRER UN NOMBRE ALÉATOIRE</h2>
-                <hr class="small-separator">
-                <p class="subtitle block-center">
-                    Le nombre ci-dessous représente le nombre aléatoire généré. Une fois la loi associée sélectionnée, cliquez sur le bouton.
-                </p>
-            </div>
-            <div class="col-md-12">
-                <div id="random_number" class="text-center">
-                    0
-                </div>
-            </div>
-            <div class="col-md-12">
-                <button id="generate_button" class="btn-rounded block-center">
-                    Générer un nombre aléatoire
-                </button>
-            </div>
-            <div class="col-md-12">
-                <select id="law_select" class="form-control block-center">
-                    <option selected disabled>- Loi associée -</option>
-                    <option value="0">Loi uniforme</option>
-                    <option value="1">Loi normale</option>
-                    <option value="2">Loi de Poisson</option>
-                    <option value="3">Loi exponentielle</option>
-                </select>
-            </div>
-            <div class="col-md-12">
-                <div id="lambda_form" class="hidden">
-                    <input type="number" id="lambda_input" class="form-control block-center" placeholder="λ">
-                </div>
-            </div>
-            <div class="col-md-12 text-center">
-                <a class="page-scroll color-white" href="#poisson_process_section">
-                    <i class="fa fa-arrow-down"></i>&nbsp;&nbsp;Simuler un processus de Poisson
-                </a>
-            </div>
-        </div>
 
     </section>
 
@@ -72,21 +29,51 @@
                 <h2 class="h3 text-center">SIMULER UN PROCESSUS DE POISSON</h2>
                 <hr class="small-separator blue">
                 <p class="subtitle block-center">
-                    Le graphique ci-dessous présente le processus de Poisson généré suivant les paramètres n (le temps de capture) et λ remplis après.
+                    Le graphique ci-dessous présente le processus de Poisson généré pour 1 équipement. La variable m représente la moyenne relevée et n représente le nombre de pannes.
                 </p>
             </div>
             <div class="col-md-12">
                 <div id="poisson_process_chart_container"></div>
             </div>
             <div class="col-md-12">
-                <button id="poisson_process_simulation_button" class="btn-rounded block-center">
-                    Simuler le processus
+                <div id="poisson_process_m" class="text-center">m = 0</div>
+            </div>
+            <div class="col-md-12">
+                <div id="poisson_process_n" class="text-center">n = 0</div>
+            </div>
+            <div class="col-md-12">
+                <button id="poisson_process_start_button" class="btn-rounded block-center">
+                    Démarrer la simulation
+                </button>
+                <button id="poisson_process_stop_button" class="btn-rounded block-center hidden">
+                    Arrêter la simulation
                 </button>
             </div>
             <div class="col-md-12">
-                <input type="number" id="stop_poisson_process_input" class="form-control block-center" placeholder="Temps de capture">
                 <input type="number" id="lambda_poisson_process_input" class="form-control block-center" placeholder="λ" step="any">
             </div>
+        </div>
+        <div id="satellite_row" class="row hidden">
+            <div class="col-md-12">
+                <h2 class="h3 text-center">SIMULER N SATELLITE EN MISSION</h2>
+                <hr class="small-separator blue">
+                <p class="subtitle block-center">
+                    Le formulaire ci-dessous permet la simulation de n satellite en mission et le calcul de la fiabilité de ces derniers à remplir leur mission.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <input type="number" id="poisson_process_n_satellite_input" class="form-control block-center" placeholder="Nb sat.">
+            </div>
+            <div class="col-md-12">
+                <input type="number" id="poisson_process_mission_duration_input" class="form-control block-center" placeholder="Tps. Mission (en année)" step="any">
+            </div>
+            <div class="col-md-12">
+                <button id="poisson_process_satellite_simulation_button" class="btn-rounded block-center">
+                    Lancer la simulation
+                </button>
+            </div>
+            <div id="poisson_process_f_satellites" class="col-md-12 text-center"></div>
+            <div id="poisson_process_f_multiple_equipement" class="col-md-12 text-center"></div>
         </div>
 
     </section>
@@ -105,14 +92,44 @@
     <script type="text/javascript">
 
         /**
+         * Timer d'affichage du processus de Poisson simulé.
+         *
+         * @type {Object}
+         */
+        let poisson_process_timer;
+
+        /**
+         * Moyenne du processus de Poisson généré.
+         *
+         * @type {Float}
+         */
+        let poisson_process_sum = 0.0;
+
+        /**
+         * Nombre d'événements de la simulation actuelle.
+         * 
+         * @type {Number}
+         */
+        let poisson_process_events = 0;
+
+        /**
          * Simule un processus de Poisson.
          * 
          * @param {Object}  chart
          * @param {Float}   lambda
          * @param {Integer} stop
+         * @param {Float} start
+         *
+         * @return {Float}
          */
-        function poissonProcess(chart, lambda, stop)
+        function poissonProcess(chart, lambda, stop, start)
         {
+            // On applique une valeur par défaut à la variable start.
+            if (typeof start == 'undefined')
+            {
+                start = Math.expRandom(lambda);
+            }
+
             // On vide le graphique.
             chart.series[0].remove(true);
             chart.addSeries({
@@ -121,12 +138,50 @@
                 color: '#337ab7'
             });
 
-            for (let timer = 0; timer < stop; timer += Math.expRandom(lambda))
+            let previous_time = start;
+
+            for (var timer = start; timer < stop; timer += Math.expRandom(lambda))
             {
                 chart.series[0].addPoint(
                     [ timer, 1 ], true
                 );
+
+                // On met à jour les paramètres de calcul de la moyenne.
+                if (timer != start)
+                {
+                    poisson_process_sum += (timer - previous_time);
+                    previous_time = timer;
+                    poisson_process_events++;
+                }
             }
+
+            // On retourne le dernier temps relevé.
+            return timer;
+        }
+
+        /**
+         * Simule n satellite en mission de mission_duration années. Retourne la
+         * fiabilité de ceux-ci à remplir leur mission sans panne.
+         * 
+         * @param {Float} lambda
+         * @param {Float} mission_duration
+         * @param {Number} n
+         * 
+         * @return {Float}
+         */
+        function satelliteFiability(lambda, mission_duration, n)
+        {
+            let e = 0;
+
+            for (let i = 0; i < n; i++)
+            {
+                for (let timer = Math.expRandom(lambda); timer < mission_duration; timer += Math.expRandom(lambda))
+                {
+                    e++;
+                }
+            }
+
+            return 1 - (e / n);
         }
         
         $(function()
@@ -153,6 +208,9 @@
                     column: {
                         pointPadding: 0.5,
                         borderWidth: 0
+                    },
+                    series: {
+                        animation: false
                     }
                 },
                 series: [{
@@ -162,62 +220,79 @@
                 }]
             });
 
-            // Action lors du clic sur le bouton de génération d'un nombre
-            // aléatoire.
-            $('#generate_button').on('click', function()
+            // Action lors du clic sur le bouton de démarrage de la simulation
+            // d'un processus de Poisson.
+            $('#poisson_process_start_button').on('click', function()
             {
-                let law  = parseInt($('#law_select').val(), 10);
+                $(this).addClass('hidden');
+                $('#poisson_process_stop_button').removeClass('hidden');
+                $('#poisson_process_n_input').addClass('hidden');
 
-                switch (law)
-                {
-                    case 0:
-                        $('#random_number').text(
-                            Math.random().toFixed(4)
-                        );
-                        break;
-                    case 1:
-                        $('#random_number').text(
-                            Math.normalRandom().toFixed(4)
-                        );
-                        break;
-                    case 2:
-                        var lambda = parseFloat($('#lambda_input').val());
-                        $('#random_number').text(
-                            Math.poissonRandom(lambda)
-                        );
-                        break;
-                    case 3:
-                        var lambda = parseFloat($('#lambda_input').val());
-                        $('#random_number').text(
-                            Math.expRandom(lambda).toFixed(4)
-                        );
-                        break;
-                }
-            });
-
-            // Action lors du changement de loi associée.
-            $('#law_select').on('change', function()
-            {
-                $('#lambda_form').val('').addClass('hidden');
-
-                switch (parseInt($(this).val(), 10))
-                {
-                    case 2:
-                    case 3:
-                        $('#lambda_form').removeClass('hidden');
-                        break;
-                }
-            });
-
-            // Action lors du clic sur le bouton de simulation d'un processus de
-            // Poisson.
-            $('#poisson_process_simulation_button').on('click', function()
-            {
                 let chart  = $('#poisson_process_chart_container').highcharts();
                 let lambda = parseFloat($('#lambda_poisson_process_input').val());
-                let stop   = parseInt($('#stop_poisson_process_input').val(), 10);
+                let stop   = (1 / lambda) * 10;
+                let start  = 0;
 
-                poissonProcess(chart, lambda, stop);
+                // On réinitialise les variables permettant le calcul de la
+                // moyenne.
+                poisson_process_sum = 0.0;
+                poisson_process_events = 0;
+
+                $('#poisson_process_m').text('m = 0');
+                $('#poisson_process_n').text('n = 0');
+
+                // On démarre la simulation.
+                poisson_process_timer = setInterval(function()
+                {
+                    start = poissonProcess(chart, lambda, stop, start);
+                    stop += (1 / lambda) * 10;
+                    $('#poisson_process_m').text(
+                        'm = ' + (poisson_process_sum / poisson_process_events)
+                    );
+                    $('#poisson_process_n').text(
+                        'n = ' + poisson_process_events
+                    );
+                }, 2000);
+            });
+
+            // Action lors du clic sur le bouton d'arrêt de la simulation d'un
+            // processus de Poisson.
+            $('#poisson_process_stop_button').on('click', function()
+            {
+                $(this).addClass('hidden');
+                $('#poisson_process_start_button').text('Redémarrer une simulation').removeClass('hidden');
+                $('#lambda_poisson_process_input').val(1 / (poisson_process_sum / poisson_process_events));
+                $('#satellite_row').removeClass('hidden');
+
+                // On arrête la simulation.
+                clearInterval(poisson_process_timer);
+            });
+
+            // Action lors du clic sur le bouton de simulation de n satellites
+            // en mission.
+            $('#poisson_process_satellite_simulation_button').on('click', function()
+            {
+                let lambda           = $('#lambda_poisson_process_input').val();
+                let mission_duration = parseFloat($('#poisson_process_mission_duration_input').val());
+                let n                = parseInt($('#poisson_process_n_satellite_input').val(), 10);
+
+                let f = [
+                    satelliteFiability(lambda, mission_duration, n)
+                ];
+                f.push(1 - Math.pow(1 - f[0], 2));
+                f.push(1 - Math.pow(1 - f[0], 3));
+                f.push(1 - Math.pow(1 - f[0], 4));
+                f.push(1 - Math.pow(1 - f[0], 5));
+
+                $('#poisson_process_f_satellites').text('F = ' + (f[0] * 100).toFixed(2) + '%');
+
+                $('#poisson_process_f_multiple_equipement').text('');
+                for (let i = 1; i < f.length; i++)
+                {
+                    $('#poisson_process_f_multiple_equipement').append(
+                        'F (avec ' + i + ' équipements) = ' + (f[i] * 100).toFixed(2) + '%<br>'
+                    );
+                }
             });
         });
 

@@ -82,19 +82,7 @@ section {
     font-size: 50px;
 }
 
-#random_number {
-    color: white;
-    font-size: 5em;
-    margin-bottom: 20px;
-}
-
-#generate_button {
-    margin-bottom: 20px;
-    border-color: white;
-    color: white !important;
-}
-
-#poisson_process_simulation_button {
+#poisson_process_start_button, #poisson_process_stop_button {
     margin-bottom: 20px;
 }
 
@@ -104,12 +92,38 @@ section {
     margin-bottom: 20px;
 }
 
+#poisson_process_m, #poisson_process_n {
+    font-weight: bold;
+}
+
+#poisson_process_n {
+    margin-bottom: 20px;
+}
+
 #lets_go_button {
     margin-top: 30px;
+    border-color: white;
+    color: white !important;
 }
 
 #app_footer {
     padding: 30px;
     font-family: 'Fragment Core', Arial, sans-serif;
     font-size: 17px;
+}
+
+#lambda_poisson_process_input {
+    margin-bottom: 20px;
+}
+
+#satellite_row .subtitle {
+    margin-bottom: 20px;
+}
+
+#poisson_process_satellite_simulation_button {
+    margin-bottom: 20px;
+}
+
+#poisson_process_f_satellites {
+    font-weight: bold;
 }
