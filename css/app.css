@@ -112,7 +112,7 @@ section {
     font-size: 17px;
 }
 
-#lambda_poisson_process_input {
+#lambda_poisson_process_input, #k_poisson_process_input {
     margin-bottom: 20px;
 }
 

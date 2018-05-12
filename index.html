@@ -52,6 +52,9 @@
             <div class="col-md-12">
                 <input type="number" id="lambda_poisson_process_input" class="form-control block-center" placeholder="λ" step="any">
             </div>
+            <div class="col-md-12">
+                <input type="number" id="k_poisson_process_input" class="form-control block-center" placeholder="k (par défaut 1)" step="any">
+            </div>
         </div>
         <div id="satellite_row" class="row hidden">
             <div class="col-md-12">
@@ -117,17 +120,18 @@
          * 
          * @param {Object}  chart
          * @param {Float}   lambda
+         * @param {Float}   k
          * @param {Integer} stop
-         * @param {Float} start
+         * @param {Float}   start
          *
          * @return {Float}
          */
-        function poissonProcess(chart, lambda, stop, start)
+        function poissonProcess(chart, lambda, k, stop, start)
         {
             // On applique une valeur par défaut à la variable start.
             if (typeof start == 'undefined')
             {
-                start = Math.expRandom(lambda);
+                start = Math.weibullRandom(lambda, k);
             }
 
             // On vide le graphique.
@@ -140,7 +144,7 @@
 
             let previous_time = start;
 
-            for (var timer = start; timer < stop; timer += Math.expRandom(lambda))
+            for (var timer = start; timer < stop; timer += Math.weibullRandom(lambda, k))
             {
                 chart.series[0].addPoint(
                     [ timer, 1 ], true
@@ -163,20 +167,23 @@
          * Simule n satellite en mission de mission_duration années. Retourne la
          * fiabilité de ceux-ci à remplir leur mission sans panne.
          * 
-         * @param {Float} lambda
-         * @param {Float} mission_duration
+         * @param {Float}  lambda
+         * @param {Float}  k
+         * @param {Float}  mission_duration
          * @param {Number} n
          * 
          * @return {Float}
          */
-        function satelliteFiability(lambda, mission_duration, n)
+        function satelliteFiability(lambda, k, mission_duration, n)
         {
             let e = 0;
 
             for (let i = 0; i < n; i++)
             {
-                for (let timer = Math.expRandom(lambda); timer < mission_duration; timer += Math.expRandom(lambda))
+                for (let timer = Math.weibullRandom(lambda, k); timer < mission_duration; timer += Math.weibullRandom(lambda, k))
                 {
+                    console.log('Satellite #' + i);
+                    console.log('Panne à ' + timer);
                     e++;
                 }
             }
@@ -230,6 +237,7 @@
 
                 let chart  = $('#poisson_process_chart_container').highcharts();
                 let lambda = parseFloat($('#lambda_poisson_process_input').val());
+                let k      = parseFloat($('#k_poisson_process_input').val()) || 1;
                 let stop   = (1 / lambda) * 10;
                 let start  = 0;
 
@@ -244,10 +252,10 @@
                 // On démarre la simulation.
                 poisson_process_timer = setInterval(function()
                 {
-                    start = poissonProcess(chart, lambda, stop, start);
+                    start = poissonProcess(chart, lambda, k, stop, start);
                     stop += (1 / lambda) * 10;
                     $('#poisson_process_m').text(
-                        'm = ' + (poisson_process_sum / poisson_process_events)
+                        'm = ' + (poisson_process_sum / poisson_process_events).toFixed(3)
                     );
                     $('#poisson_process_n').text(
                         'n = ' + poisson_process_events
@@ -273,11 +281,12 @@
             $('#poisson_process_satellite_simulation_button').on('click', function()
             {
                 let lambda           = $('#lambda_poisson_process_input').val();
+                let k                = $('#k_poisson_process_input').val() || 1;
                 let mission_duration = parseFloat($('#poisson_process_mission_duration_input').val());
                 let n                = parseInt($('#poisson_process_n_satellite_input').val(), 10);
 
                 let f = [
-                    satelliteFiability(lambda, mission_duration, n)
+                    satelliteFiability(lambda, k, mission_duration, n)
                 ];
                 f.push(1 - Math.pow(1 - f[0], 2));
                 f.push(1 - Math.pow(1 - f[0], 3));
@@ -290,7 +299,7 @@
                 for (let i = 1; i < f.length; i++)
                 {
                     $('#poisson_process_f_multiple_equipement').append(
-                        'F (avec ' + i + ' équipements) = ' + (f[i] * 100).toFixed(2) + '%<br>'
+                        'F (avec ' + (i + 1) + ' équipements) = ' + (f[i] * 100).toFixed(2) + '%<br>'
                     );
                 }
             });

@@ -59,4 +59,17 @@ $(function()
 	{
     	return -Math.log(1 - Math.random()) / lambda;
     };
+
+    /**
+     * Retourne un nombre aléatoire suivant une loi de Weibull.
+     * 
+     * @param {Float} lambda
+     * @param {Float} k
+     * 
+     * @return {Float}
+     */
+    Math.weibullRandom = function(lambda, k)
+    {
+        return Math.pow(-Math.log(1 - Math.random()), 1 / k) / Math.pow(lambda, k);
+    };
 });
