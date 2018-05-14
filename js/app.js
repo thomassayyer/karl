@@ -70,6 +70,6 @@ $(function()
      */
     Math.weibullRandom = function(lambda, k)
     {
-        return Math.pow(-Math.log(1 - Math.random()), 1 / k) / Math.pow(lambda, k);
+        return Math.pow(-Math.log(1 - Math.random()), 1 / k) / lambda;
     };
 });
